@@ -8,11 +8,11 @@ pathDownloads = "D:\Downloads"
 pathVideo = "D:\Downloads\Videos"
 pathMusic = "D:\Downloads\Musics"
 pathImage = "D:\Downloads\Images"
-pathDestination = " "
-
+pathDestination = ""
 
 def CreateUniqueFileName(pathFolder,fileName,copy):
     fileExists = os.path.exists(pathFolder+"\\"+fileName)
+    uniqueFileName = ""
     copy += 1    
     if fileExists == 0:
         return fileName
