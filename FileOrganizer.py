@@ -39,8 +39,9 @@ class MoveHandler(FileSystemEventHandler):
         with os.scandir(pathDownloads) as directories:
             for file in directories:
                 if file.is_file():
-                    print(file.name)     
+                    #print(file.name)     
                     name = file.name
+                    pathDestination =''
                     if name.endswith('.mp4') or name.endswith('.mkv'):
                         pathDestination = pathVideo
                     if name.endswith('.mp3') or name.endswith('.flac'):
@@ -65,10 +66,10 @@ if __name__ == "__main__":
     observer.schedule(event_handler, path, recursive=True)
     # Start the observer
     observer.start()
-    try:
-        while True:
+    #try:
+    #   while True:
             # Set the thread sleep time
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
+    #        time.sleep(1)
+    #except KeyboardInterrupt:
+    #    observer.stop()
     observer.join()
