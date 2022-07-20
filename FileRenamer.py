@@ -15,7 +15,7 @@ def RemoveChar(oldFile,char):
         oldFile = folder+'\\'+file
         newFile = folder+'\\'+newName
         os.rename(oldFile,newFile)
-        print('Renamed file: '+oldFile+' to '+newFile)
+        print('Renamed File: "'+oldFile+'" To "'+newFile+'"')
 
 def CheckEntries(file):
     if file.is_dir():

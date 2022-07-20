@@ -66,10 +66,5 @@ if __name__ == "__main__":
     observer.schedule(event_handler, path, recursive=True)
     # Start the observer
     observer.start()
-    #try:
-    #   while True:
-            # Set the thread sleep time
-    #        time.sleep(1)
-    #except KeyboardInterrupt:
-    #    observer.stop()
+    # Join threads to avoid termination from exceptions like KeyboardException
     observer.join()
