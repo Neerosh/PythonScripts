@@ -8,14 +8,14 @@ def RemoveChar(oldFile,char):
     file = oldFile[oldFile.rindex('\\')+1:]
     
     if oldFile.rfind(char) > 0:
-        newName = file[0:file.rfind(char)]+'-'+file[file.rfind(char)+1:]
+        newName = file[0:file.rfind(char)] + "-" + file[file.rfind(char)+1:]
         if char == '／':
-            newName = file[0:file.rfind(char)]+file[file.rfind(char)+2:]
+            newName = file[0:file.rfind(char)] + file[file.rfind(char)+2:]
             
         oldFile = folder+'\\'+file
         newFile = folder+'\\'+newName
         os.rename(oldFile,newFile)
-        print('Renamed File: "'+oldFile+'" To "'+newFile+'"')
+        print(f'Renamed File: "{oldFile}" To "{newFile}')
 
 def CheckEntries(file):
     if file.is_dir():

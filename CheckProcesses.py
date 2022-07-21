@@ -21,13 +21,13 @@ def PrintProcesses(listProcesses,subProcesses):
         
     for process in listProcesses:
         try:
-            print("Process: "+str(process.pid)+" - "+process.name())
+            print(f"Process: {str(process.pid)} - {process.name()}")
             print("-- Started with:")
             for item in process.cmdline():
                 print("---- "+item)
             if subProcesses == 1:
                 for processChild in process.children():
-                    print("Child: "+str(processChild.pid)+" - "+processChild.name())
+                    print(f"Child: {str(processChild.pid)} - {processChild.name()}")
                     print("-- Child Started with:")
                     for item in processChild.cmdline():
                         print("---- "+item)

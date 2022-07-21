@@ -1,30 +1,36 @@
 
-import os,time,shutil
+import os,shutil
 import logging
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-pathDownloads = "D:\Downloads"
-pathVideo = "D:\Downloads\Videos"
-pathMusic = "D:\Downloads\Musics"
-pathImage = "D:\Downloads\Images"
+pathDownloads = r"D:\Downloads"
+pathVideo = r"D:\Downloads\Videos"
+pathMusic = r"D:\Downloads\Musics"
+pathImage = r"D:\Downloads\Images"
 pathDestination = ""
 
 def CreateUniqueFileName(pathFolder,fileName,copy):
     fileExists = os.path.exists(pathFolder+"\\"+fileName)
-    uniqueFileName = ""
-    copy += 1    
     if fileExists == 0:
         return fileName
     
+    uniqueFileName = ""
+    copy += 1    
+    
     if copy > 1:
-        uniqueFileName = fileName[0:fileName.rfind(str(copy-1))]+str(copy)+fileName[fileName.rfind('.'):]
-    else:
-        uniqueFileName = fileName[0:fileName.rfind('.')]+' - ('+str(copy)+')'+fileName[fileName.rfind('.'):]
+        sliceBeforeName = fileName[0:fileName.rfind(str(copy-1))]
+        sliceAfterName = fileName[fileName.rfind('.'):]
+        uniqueFileName = f"{sliceBeforeName}{str(copy)}{sliceAfterName}"
+        return CreateUniqueFileName(pathFolder,uniqueFileName,copy)
+    
+    sliceBeforeName = fileName[0:fileName.rfind('.')]
+    sliceAfterName = fileName[fileName.rfind('.'):]
+    uniqueFileName = f"{sliceBeforeName} - ({str(copy)}){sliceAfterName}"
     return CreateUniqueFileName(pathFolder,uniqueFileName,copy)
     
 def CopyFile(fromPath,toPath,fileName):
-    fileExists = os.path.exists(fromPath+"\\"+fileName)
+    fileExists = os.path.exists(f"{fromPath}\\{fileName}")
     destinationExists = os.path.exists(toPath)
     
     if destinationExists == 0:
@@ -32,7 +38,10 @@ def CopyFile(fromPath,toPath,fileName):
     
     if fileExists:
         fileNameDestination = CreateUniqueFileName(toPath,fileName,0)
-        shutil.move(fromPath+"\\"+fileName, toPath+"\\"+fileNameDestination)
+        fullpathFrom = f"{fromPath}\\{fileName}"
+        fullpathTo = f"{toPath}\\{fileNameDestination}"
+        shutil.move(fullpathFrom,fullpathTo)
+        logging.info(f'Move file "{fullpathFrom}" to "{fullpathTo}"')
   
 class MoveHandler(FileSystemEventHandler):
     def on_modified(self, event):
