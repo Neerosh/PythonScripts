@@ -1,5 +1,4 @@
-from pickle import TRUE
-import psutil,keyboard
+import psutil
 
 def SearchProcessesByName(processName):
     listProcesses = list()

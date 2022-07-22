@@ -1,6 +1,6 @@
 import os
 #removing unwanted characters
-pathMusic = "D:\Music"
+pathMusic = r"D:\Downloads\Music"
 
 def RemoveChar(oldFile,char):
     
@@ -8,29 +8,31 @@ def RemoveChar(oldFile,char):
     file = oldFile[oldFile.rindex('\\')+1:]
     
     if oldFile.rfind(char) > 0:
-        newName = file[0:file.rfind(char)] + "-" + file[file.rfind(char)+1:]
+        newName = file.replace(char," - ")
         if char == '／':
-            newName = file[0:file.rfind(char)] + file[file.rfind(char)+2:]
+            newName = file.replace(char,"")
             
         oldFile = folder+'\\'+file
         newFile = folder+'\\'+newName
         os.rename(oldFile,newFile)
         print(f'Renamed File: "{oldFile}" To "{newFile}')
+        return newFile
+    return oldFile
 
 def CheckEntries(file):
+    filePath = file.path
+    if file.is_file():
+        filePath = RemoveChar(filePath,'—')
+        filePath = RemoveChar(filePath,'／')
     if file.is_dir():
-        with os.scandir(file.path) as fileList:
+        with os.scandir(filePath) as fileList:
             for entry in fileList:
                 if entry.is_file():
-                    RemoveChar(entry.path,'—')
-                    RemoveChar(entry.path,'／')
+                    filePath = RemoveChar(entry.path,'—')
+                    filePath = RemoveChar(entry.path,'／')
                 else:
                     CheckEntries(entry)
-    if file.is_file():
-        RemoveChar(entry.path,'—')
-        RemoveChar(entry.path,'／')
             
-         
         
 with os.scandir(pathMusic) as fileList:
     for file in fileList:
