@@ -32,8 +32,12 @@ def CheckEntries(file):
                     filePath = RemoveChar(entry.path,'／')
                 else:
                     CheckEntries(entry)
-            
-        
-with os.scandir(pathMusic) as fileList:
-    for file in fileList:
-        CheckEntries(file)
+              
+def Main():
+    with os.scandir(pathMusic) as fileList:
+        for file in fileList:
+            CheckEntries(file)    
+  
+  
+if __name__ == "__main__":
+    Main()

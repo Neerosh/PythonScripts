@@ -1,8 +1,8 @@
 import pyttsx3
 
+
 # init function to get an engine instance for the speech synthesis
 engine = pyttsx3.init()
-
 voices = engine.getProperty('voices')  
 #engine.setProperty('voice', voices[0].id)  #changing index, changes voices. 0 for male
 engine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female

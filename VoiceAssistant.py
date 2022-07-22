@@ -1,4 +1,3 @@
-from types import NoneType
 import speech_recognition as sr
 import pyttsx3
 import webbrowser
@@ -13,14 +12,28 @@ def SetupBrowser():
     webbrowser.register('brave', None, 
                         webbrowser.BackgroundBrowser(brave_path))
 
+def InitializeVoiceEngine():
+    voiceEngine = pyttsx3.init()
+    voices = voiceEngine.getProperty('voices')  
+    rate = voiceEngine.getProperty('rate')
+
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+    voiceEngine.setProperty('rate', rate-50)
+    #engine.setProperty('voice', voices[0].id)  #changing index, changes voices. 0 for male
+    voiceEngine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female
+    return voiceEngine
+
 # ==== Voice Control
-def Speak(text):
-    engine.say(text)
-    engine.runAndWait()
+def Speak(text,voiceEngine):
+    voiceEngine.say(text)
+    voiceEngine.runAndWait()
     # ====Default Start
 
 # ==== Take Command
-def TakeCommand():
+def TakeCommand(listener):
     nameAssistant = 'Silver'
     try:
         with sr.Microphone() as data_taker:
@@ -33,8 +46,8 @@ def TakeCommand():
     return ""
     # ==== Run command
 
-def RunCommand():
-    instruction = TakeCommand()
+def RunCommand(listener,voiceEngine):
+    instruction = TakeCommand(listener)
     result = True
     nameAssistant = 'Silver'
     try:  
@@ -48,51 +61,49 @@ def RunCommand():
             
         elif 'current time' in instruction:
             time = datetime.datetime.now().strftime('%I: %M')
-            Speak('current time is' + time)
+            Speak('current time is' + time,voiceEngine)
             
         elif "open music player" in instruction:
-            Speak('Opening Music Player')
+            Speak('Opening Music Player',voiceEngine)
             # Windows only
             os.system(r'start "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\AIMP" AIMP')
             
         elif "open brave" in instruction:
-            Speak('Opening Brave')
+            Speak('Opening Brave',voiceEngine)
             webbrowser.get('brave').open('duckduckgo.com')
             
         elif "open youtube" in instruction:
-            Speak('Opening Youtube')
+            Speak('Opening Youtube',voiceEngine)
             webbrowser.get('brave').open('youtube.com')
 
         elif "open gmail" in instruction:
-            Speak('Opening Gmail')
+            Speak('Opening Gmail',voiceEngine)
             webbrowser.get('brave').open('gmail.com')
 
         elif "shutdown" in instruction:
-            Speak('I am shutting down')
+            Speak('I am shutting down',voiceEngine)
             result = False
         
         else:
-            Speak('I did not understand, can you repeat again')
+            Speak('I did not understand, can you repeat again',voiceEngine)
     except Exception as ex:
         logging.error(f"Run Command Exception: {ex}")
     return result
 
+def Main():
+    voiceEngine = InitializeVoiceEngine()
+    listener = sr.Recognizer()
+    
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
+    
+    SetupBrowser()
+    
+    # ====To run assistance continuously
+    while RunCommand(listener,voiceEngine):
+        pass
 
-engine = pyttsx3.init()
-voices = engine.getProperty('voices')  
-rate = engine.getProperty('rate')
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
-
-engine.setProperty('rate', rate-50)
-#engine.setProperty('voice', voices[0].id)  #changing index, changes voices. 0 for male
-engine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female
-
-listener = sr.Recognizer()
-SetupBrowser()
-
-# ====To run assistance continuously
-while RunCommand():
-    pass
+if __name__ == "__main__":
+    Main()

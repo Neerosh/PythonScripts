@@ -11,8 +11,12 @@ def CheckAbbreviation():
         # use space after typing the abbreviation to make python replace the text
     while True:  
         time.sleep(1)
+       
+def Main():
+    # creates a new thread to avoid termination from exceptions like KeyboardException
+    thread = Thread(target=CheckAbbreviation)
+    thread.start()
+    thread.join()
         
-# creates a new thread to avoid termination from exceptions like KeyboardException
-thread = Thread(target=CheckAbbreviation)
-thread.start()
-thread.join()
+if __name__ == "__main__":
+    Main()

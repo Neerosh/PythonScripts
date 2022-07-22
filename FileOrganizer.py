@@ -61,7 +61,7 @@ class MoveHandler(FileSystemEventHandler):
                     if pathDestination != '':
                         CopyFile(pathDownloads,pathDestination,name)
   
-if __name__ == "__main__":
+def Main():
     # Set the format for logging info
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
@@ -77,3 +77,7 @@ if __name__ == "__main__":
     observer.start()
     # Join threads to avoid termination from exceptions like KeyboardException
     observer.join()
+    
+  
+if __name__ == "__main__":
+    Main()

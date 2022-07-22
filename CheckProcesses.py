@@ -1,3 +1,4 @@
+from pip import main
 import psutil
 
 def SearchProcessesByName(processName):
@@ -46,17 +47,22 @@ def CheckProcessRunning(processName):
             pass
     return False
 
-# Search and print only processes with the name typed
-searchName = ''
-print("\nType 'exit' to close this program.")
-while True:
-    searchName = input('Please Enter Process Name: \n')
-    if searchName == 'exit':
-        print("Program closed...\n")
-        break
-    if searchName != '':
-        listProcesses = SearchProcessesByName(searchName)
-        PrintProcesses(listProcesses,1)
+def Main():
+    # Search and print only processes with the name typed
+    searchName = ''
+    print("\nType 'exit' to close this program.")
+    while True:
+        searchName = input('Please Enter Process Name: \n')
+        if searchName == 'exit':
+            print("Program closed...\n")
+            break
+        if searchName != '':
+            listProcesses = SearchProcessesByName(searchName)
+            PrintProcesses(listProcesses,1)
+
+
+if __name__ == "__main__":
+    Main()
 
 
     
