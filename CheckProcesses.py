@@ -1,4 +1,3 @@
-from pip import main
 import psutil
 
 def SearchProcessesByName(processName):

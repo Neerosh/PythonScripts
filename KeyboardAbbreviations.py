@@ -4,7 +4,7 @@ from threading import Thread
 def CheckAbbreviation():
     abbreviations = {
         "neerosh-github" : "https://github.com/Neerosh",
-        "neerosh-site"   : "https://neerosh.github.io/"
+        "neerosh-site"   : "https://neerosh.github.io"
     }
     for abbreviation, fullText in abbreviations.items():
         keyboard.add_abbreviation(abbreviation, fullText)

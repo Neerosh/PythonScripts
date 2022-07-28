@@ -1,4 +1,4 @@
-import speech_recognition as sr
+import speech_recognition
 import pyttsx3
 import webbrowser
 import datetime
@@ -34,9 +34,8 @@ def Speak(text,voiceEngine):
 
 # ==== Take Command
 def TakeCommand(listener):
-    nameAssistant = 'Silver'
     try:
-        with sr.Microphone() as data_taker:
+        with speech_recognition.Microphone() as data_taker:
             voice = listener.listen(data_taker,timeout=5,phrase_time_limit=5)       
             instruction = listener.recognize_google(voice)
             instruction = instruction.lower()
@@ -92,7 +91,7 @@ def RunCommand(listener,voiceEngine):
 
 def Main():
     voiceEngine = InitializeVoiceEngine()
-    listener = sr.Recognizer()
+    listener = speech_recognition.Recognizer()
     
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
