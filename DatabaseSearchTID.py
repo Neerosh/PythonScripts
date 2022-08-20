@@ -1,5 +1,4 @@
 import os
-from pickle import TRUE
 
 def SearchSubdirectory(directory,search):
     endingWith = ['.zip','.7z','.rar','.001']
