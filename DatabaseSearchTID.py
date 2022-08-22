@@ -13,7 +13,6 @@ def SearchSubdirectory(directory,search):
             
 
 def Main():
-
     pathExists = False
     while pathExists == False:
         searchPath = input("\nFolder path to search: (ex: G:\\)\n")
