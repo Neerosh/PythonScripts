@@ -14,11 +14,11 @@ def CreateDirectories(destinationPath,listDirectories):
             os.mkdir(destinationPath+directory)
             print('Directory Created: '+destinationPath+directory)
 
-def CopyFiles(searchPath,destinationPath,listFiles):
+def CopyFiles(mainSearchPath,destinationPath,listFiles):
     for filepath in listFiles:
         if (os.path.exists(filepath)):
             #fileName = filepath[filepath.rindex('\\')+1:]
-            destination = filepath.replace(searchPath,destinationPath)
+            destination = filepath.replace(mainSearchPath,destinationPath)
             
             shutil.copyfile(filepath,destination)
             #print('Copied File From: '+filepath)
@@ -59,20 +59,24 @@ def CreateBackup(searchPath,destinationPath,folder):
     
     #Write Reference File
     with open(destinationPath+'BackupReference.txt', 'a') as file:
-        file.write(f"{folder} Original Path: {searchPath}\n")
-    
-    searchPath = searchPath+"\\"
-    destinationPath = destinationPath+"\\"
-    folder = folder+"\\"
+        file.write(f"{folder} | Original Path: {searchPath}\n")
     
     #Create Module Folder
     destinationPath = f"{destinationPath}{folder}"
     if (os.path.exists(destinationPath) == False):
         os.mkdir(destinationPath)
     
-    ListDirectory(searchPath,searchPath,listFiles,listDirectories)
+    mainPath = ''
+    #folder before selected folder
+    if searchPath.rindex('\\') > 0:
+        mainPath = searchPath[0:searchPath.rindex('\\')]
+        listDirectories.append(searchPath.replace(mainPath,''))
+    else:
+        mainPath = searchPath
+        
+    ListDirectory(mainPath,searchPath,listFiles,listDirectories)
     CreateDirectories(destinationPath,listDirectories)
-    CopyFiles(searchPath,destinationPath,listFiles)
+    CopyFiles(mainPath,destinationPath,listFiles)
 
 def Main():
     searchPath = ''
@@ -83,6 +87,11 @@ def Main():
     destinationPath = f"D:\\Backup_{current_time.day}_{current_time.month}_{current_time.year}\\"
     if (os.path.exists(destinationPath) == False):
         os.mkdir(destinationPath)
+    
+    #Kamidori Alchemy Meister Save
+    searchPath ='C:\\Users\\Nerrosh\\AppData\\Local\\Eushully'
+    folder = 'Kamidori Alchemy Meister Save'
+    CreateBackup(searchPath,destinationPath,folder)
     
     #Guitar Hero WTDE Save
     searchPath = 'C:\\Users\\Nerrosh\\Documents\\Aspyr'
@@ -101,7 +110,7 @@ def Main():
 
     #Create Zip
     ZipFiles(destinationPath)
-    input("Press Enter to Exit")
+    #input("Press Enter to Exit")
    
 if __name__ == "__main__":
     Main()
