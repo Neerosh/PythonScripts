@@ -40,7 +40,7 @@ def ZipFiles(destinationPath):
     
     # write files and folders to a zipfile
     ZipPath = destinationPath[0:destinationPath.rindex('\\')]+'.zip'
-    zip_file = zipfile.ZipFile(ZipPath, 'w')
+    zip_file = zipfile.ZipFile(ZipPath, 'w',zipfile.ZIP_DEFLATED, compresslevel=9)
     with zip_file:
         # write each Directory
         for directory in listDirectories:
@@ -107,7 +107,12 @@ def Main():
     searchPath = 'C:\\Users\\Nerrosh\\AppData\\Roaming\\TeknoParrot'
     folder = 'Tekno Parrot Save'
     CreateBackup(searchPath,destinationPath,folder)
-
+    
+    #HOLOCURE Save
+    searchPath = 'C:\\Users\\Nerrosh\\AppData\\Local\\HoloCure'
+    folder = 'Holocure Save'
+    CreateBackup(searchPath,destinationPath,folder)
+    
     #Create Zip
     ZipFiles(destinationPath)
     #input("Press Enter to Exit")
