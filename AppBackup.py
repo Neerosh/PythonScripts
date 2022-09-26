@@ -1,5 +1,4 @@
-
-import os,shutil,datetime
+import os,shutil,datetime,sys
 
 def SearchSubdirectory(directory,listFiles):
     for element in os.scandir(directory):
@@ -32,18 +31,9 @@ def Main():
         else:
             print("ERROR: Invalid folder path.")
             pathExists = False
-
-    
-    pathExists = False
-    while pathExists == False:
-        destinationPath = input("\nFolder where the backup folder will be created: (ex: G:\\)\n")
-        if os.path.exists(destinationPath):
-            pathExists = True
-        else:
-            print("ERROR: Invalid folder path.")
-            pathExists = False
-
-    destinationPath = f"{destinationPath}\\Backup_{current_time.day}_{current_time.month}_{current_time.year}"
+            
+    destinationPath = sys.executable[:sys.executable.rindex('\\')]  
+    destinationPath += f"\\Backup_{current_time.day}_{current_time.month}_{current_time.year}"
     
     SearchSubdirectory(searchPath,listFiles)
     CopyFiles(listFiles)

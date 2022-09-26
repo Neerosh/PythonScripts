@@ -1,4 +1,4 @@
-import os,shutil,datetime,zipfile
+import os,shutil,datetime,zipfile,sys
 
 def ListDirectory(mainSearchPath,searchPath,listFiles,listDirectories):
     for element in os.scandir(searchPath):
@@ -84,7 +84,8 @@ def Main():
     current_time = datetime.datetime.now()
     
     #Create Backup Folder
-    destinationPath = f"D:\\Backup_{current_time.day}_{current_time.month}_{current_time.year}\\"
+    destinationPath = sys.executable[:sys.executable.rindex('\\')]
+    destinationPath += f"\\Backup_{current_time.day}_{current_time.month}_{current_time.year}\\"
     if (os.path.exists(destinationPath) == False):
         os.mkdir(destinationPath)
     
