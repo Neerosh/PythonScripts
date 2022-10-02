@@ -1,6 +1,4 @@
-import os
-#removing unwanted characters
-pathMusic = r"D:\Downloads\Music\Guitar Hero 2"
+import os, mutagen, re
 
 def RemoveStartNumbers(oldFile):
     
@@ -42,24 +40,42 @@ def RemoveChar(oldFile,char):
         return newFile
     return oldFile
 
-def CheckEntries(file):
-    filePath = file.path
-    if file.is_file():
-        filePath = RemoveChar(filePath,'-')
-        filePath = RemoveStartNumbers(filePath)
-    if file.is_dir():
-        with os.scandir(filePath) as fileList:
-            for entry in fileList:
-                if entry.is_file():
-                    filePath = RemoveChar(entry.path,'-')
-                    filePath = RemoveStartNumbers(entry.path)
-                else:
-                    CheckEntries(entry)
+def RenameFile(filePath):
+    folder = filePath[0:filePath.rindex('\\')]
+    file = filePath[filePath.rindex('\\')+1:]
+    extension = filePath[filePath.rindex('.'):]
+    try:
+        fileProperties = mutagen.File(filePath,easy=True)
+        newName = fileProperties["Artist"][0]+' - '+fileProperties["Title"][0]+extension
+        
+        newName = newName.replace('?','')
+        newName = newName.replace('/',' ')
+        newName = newName.replace('\t','') # python tab caracter?
+        oldFile = folder+'\\'+file
+        newFile = folder+'\\'+newName
+        if oldFile != newFile:
+            print(newName)
+            os.rename(oldFile,newFile)
+            print(f'Renamed File: "{oldFile}" To "{newFile}')
+    except Exception as ex:
+        print(f'Error: {ex}, file: "{filePath}"')
+        
+        
+        
+        
+def ScanFolder(folderPath):
+    with os.scandir(folderPath) as entryList:
+        for entry in entryList:
+            if entry.is_file():
+                if entry.path.endswith('.mp3') or entry.path.endswith('.flac'):
+                    RenameFile(entry.path)
+            if entry.is_dir():
+                ScanFolder(entry.path)
+                
               
 def Main():
-    with os.scandir(pathMusic) as fileList:
-        for file in fileList:
-            CheckEntries(file)    
+    path = r"D:\Music\Games"
+    ScanFolder(path)
   
   
 if __name__ == "__main__":
