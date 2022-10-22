@@ -1,4 +1,4 @@
-import os,shutil,datetime,sys
+import os,shutil,datetime,sys,zipfile
 
 def ListFilesEXE(searchPath,listFilesTIDSCI):
     for element in os.scandir(searchPath):
@@ -27,7 +27,27 @@ def CopyFiles(destinationPath,listFiles):
         if (os.path.exists(filepath)):
             fileName = filepath[filepath.rindex('\\')+1:]
             shutil.copyfile(filepath,destinationPath+"\\"+fileName)
+
+            fileStats = os.stat(filepath)
+            os.utime(destinationPath+"\\"+fileName,ns = (fileStats.st_atime_ns,fileStats.st_mtime_ns))
             print('Copied File: '+filepath)
+
+
+def ZipFiles(destinationPath):
+    destinationFolder = destinationPath[0:destinationPath.rindex('\\')]
+    destinationFolderName = destinationPath[destinationPath.rindex('\\')+1:]
+    # write files and folders to a zipfile
+    ZipPath = f'{destinationFolder}\\{destinationFolderName}.zip'
+    zip_file = zipfile.ZipFile(ZipPath, 'w',zipfile.ZIP_DEFLATED, compresslevel=1)
+    with zip_file:
+        # write each File
+        for file in os.scandir(destinationPath+'\\'):
+            if file.is_file():
+                #print('create file zip: '+file)
+                zip_file.write(file.path,file.name)
+               
+       
+    print(zip_file.filename+' zip created successfully!')
 
 def Main():
     listFilesTIDSCI = []
@@ -46,7 +66,9 @@ def Main():
         os.mkdir(destinationPath)
 
     CopyFiles(destinationPath,listFilesTIDSCI)
-    print(f"Destination path = {destinationPath}")
+    ZipFiles(destinationPath)
+    print(f"Destination path = {destinationPath}.zip")
+    shutil.rmtree(destinationPath)
     input("Press Enter to Exit")
    
 if __name__ == "__main__":
