@@ -14,6 +14,7 @@ def SearchSubdirectory(directory,search):
 
 def Main():
     pathExists = False
+    searchPath = ''
     while pathExists == False:
         searchPath = input("\nFolder path to search: (ex: G:\\)\n")
         if os.path.exists(searchPath):

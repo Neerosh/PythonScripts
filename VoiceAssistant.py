@@ -56,7 +56,7 @@ def RunCommand(listener,voiceEngine):
             return True
         
         elif "who are you" in instruction:
-            Speak(f"I am your python personal voice assistant")
+            Speak(f"I am your python personal voice assistant",voiceEngine)
             
         elif 'current time' in instruction:
             time = datetime.datetime.now().strftime('%I: %M')

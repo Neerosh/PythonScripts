@@ -6,6 +6,9 @@ def RenameFile(filePath):
   extension = filePath[filePath.rindex('.'):]
   try:
     fileProperties = mutagen.File(filePath,easy=True)
+    if fileProperties == None:
+      raise Exception("Error creating fileProperties")
+    
     newName = fileProperties["Artist"][0]+' - '+fileProperties["Title"][0]+extension
     newName = newName.replace('"','')
     newName = newName.replace("'",' ')        

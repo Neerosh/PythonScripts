@@ -36,7 +36,7 @@ def Main():
     destinationPath += f"\\Backup_{current_time.day}_{current_time.month}_{current_time.year}"
     
     SearchSubdirectory(searchPath,listFiles)
-    CopyFiles(listFiles)
+    CopyFiles(listFiles,destinationPath)
     input("Press Enter to Exit")
    
 if __name__ == "__main__":

@@ -51,7 +51,8 @@ def ZipFiles(destinationPath):
             #print('create file zip: '+file)
             zip_file.write(file)
         
-    print(zip_file.filename+' zip created successfully!')
+    if zip_file.filename != None:
+        print(zip_file.filename+' zip created successfully!')
  
 def CreateBackup(searchPath,destinationPath,folder):
     listFiles = []
