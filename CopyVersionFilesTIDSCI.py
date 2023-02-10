@@ -32,7 +32,6 @@ def CopyFiles(destinationPath,listFiles):
             os.utime(destinationPath+"\\"+fileName,ns = (fileStats.st_atime_ns,fileStats.st_mtime_ns))
             print('Copied File: '+filepath)
 
-
 def ZipFiles(destinationPath):
     destinationFolder = destinationPath[0:destinationPath.rindex('\\')]
     destinationFolderName = destinationPath[destinationPath.rindex('\\')+1:]
@@ -45,7 +44,6 @@ def ZipFiles(destinationPath):
             if file.is_file():
                 #print('create file zip: '+file)
                 zip_file.write(file.path,file.name)
-               
        
     print(zip_file.filename+' zip created successfully!')
 

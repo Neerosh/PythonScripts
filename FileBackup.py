@@ -32,7 +32,7 @@ def ListBackupDirectory(searchPath,listFiles,listDirectories):
         if element.is_file():
             listFiles.append(element.path)
 
-def ZipFiles(destinationPath):
+def ZipFiles(destinationPath,destinationFolder):
     listFiles = []
     listDirectories = []
     
@@ -45,11 +45,11 @@ def ZipFiles(destinationPath):
         # write each Directory
         for directory in listDirectories:
             #print('create directory zip: '+directory)
-            zip_file.write(directory)
+            zip_file.write(directory, directory[len(destinationPath):])
         # write each File
         for file in listFiles:
             #print('create file zip: '+file)
-            zip_file.write(file)
+            zip_file.write(file, file[len(destinationPath):])
         
     if zip_file.filename != None:
         print(zip_file.filename+' zip created successfully!')
@@ -83,10 +83,11 @@ def Main():
     searchPath = ''
     destinationPath = ''
     current_time = datetime.datetime.now()
+    destinationFolder = f"Backup_{current_time.day}_{current_time.month}_{current_time.year}"
     
     #Create Backup Folder
     destinationPath = sys.executable[:sys.executable.rindex('\\')]
-    destinationPath += f"\\Backup_{current_time.day}_{current_time.month}_{current_time.year}\\"
+    destinationPath += f"\\{destinationFolder}\\"
     if (os.path.exists(destinationPath) == False):
         os.mkdir(destinationPath)
     
@@ -116,7 +117,7 @@ def Main():
     CreateBackup(searchPath,destinationPath,folder)
     
     #Create Zip
-    ZipFiles(destinationPath)
+    ZipFiles(destinationPath,destinationFolder)
     #input("Press Enter to Exit")
    
 if __name__ == "__main__":
