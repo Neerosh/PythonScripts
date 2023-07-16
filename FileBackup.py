@@ -1,4 +1,6 @@
-import os,shutil,datetime,zipfile,sys
+import os,shutil,datetime,zipfile,sys,getpass
+from sys import platform
+import logging
 
 def ListDirectory(mainSearchPath,searchPath,listFiles,listDirectories):
     for element in os.scandir(searchPath):
@@ -57,10 +59,14 @@ def ZipFiles(destinationPath,destinationFolder):
 def CreateBackup(searchPath,destinationPath,folder):
     listFiles = []
     listDirectories = []
-    
+
+    if (not os.path.exists(searchPath)):
+        logging.info("Path do not exists: "+searchPath)
+        return
+
     #Write Reference File
     with open(destinationPath+'BackupReference.txt', 'a') as file:
-        file.write(f"{folder} | Original Path: {searchPath}\n")
+        file.write(f"{folder}\n-Original Path: {searchPath}\n\n")
     
     #Create Module Folder
     destinationPath = f"{destinationPath}{folder}"
@@ -82,37 +88,42 @@ def CreateBackup(searchPath,destinationPath,folder):
 def Main():
     searchPath = ''
     destinationPath = ''
+    userFolder = ''
+    if (str.__contains__(platform,"win")):
+        userFolder = f"C:\\Users\\{getpass.getuser()}"
+        
     current_time = datetime.datetime.now()
     destinationFolder = f"Backup_{current_time.day}_{current_time.month}_{current_time.year}"
     
     #Create Backup Folder
     destinationPath = sys.executable[:sys.executable.rindex('\\')]
     destinationPath += f"\\{destinationFolder}\\"
+
     if (os.path.exists(destinationPath) == False):
         os.mkdir(destinationPath)
     
     #Kamidori Alchemy Meister Save
-    searchPath ='C:\\Users\\Nerrosh\\AppData\\Local\\Eushully'
+    searchPath = f"{userFolder}\\AppData\\Local\\Eushully"
     folder = 'Kamidori Alchemy Meister Save'
     CreateBackup(searchPath,destinationPath,folder)
     
     #Guitar Hero WTDE Save
-    searchPath = 'C:\\Users\\Nerrosh\\Documents\\Aspyr'
+    searchPath = f"{userFolder}\\Documents\\Aspyr"
     folder = 'GH WTDE Save'
     CreateBackup(searchPath,destinationPath,folder)
     
     #Guitar Hero WTDE Config
-    searchPath = 'C:\\Users\\Nerrosh\\AppData\\Local\\Aspyr'
+    searchPath = f"{userFolder}\\AppData\\Local\\Aspyr"
     folder = 'GH WTDE Config'
     CreateBackup(searchPath,destinationPath,folder)
     
-    #Tekno Parrot Save 
-    searchPath = 'C:\\Users\\Nerrosh\\AppData\\Roaming\\TeknoParrot'
+    #Tekno Parrot Saves 
+    searchPath = f"{userFolder}\\AppData\\Roaming\\TeknoParrot"
     folder = 'Tekno Parrot Save'
     CreateBackup(searchPath,destinationPath,folder)
     
     #HOLOCURE Save
-    searchPath = 'C:\\Users\\Nerrosh\\AppData\\Local\\HoloCure'
+    searchPath = f"{userFolder}\\AppData\\Local\\HoloCure"
     folder = 'Holocure Save'
     CreateBackup(searchPath,destinationPath,folder)
     
