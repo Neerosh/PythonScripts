@@ -107,16 +107,6 @@ def Main():
     folder = 'Kamidori Alchemy Meister Save'
     CreateBackup(searchPath,destinationPath,folder)
     
-    #Guitar Hero WTDE Save
-    searchPath = f"{userFolder}\\Documents\\Aspyr"
-    folder = 'GH WTDE Save'
-    CreateBackup(searchPath,destinationPath,folder)
-    
-    #Guitar Hero WTDE Config
-    searchPath = f"{userFolder}\\AppData\\Local\\Aspyr"
-    folder = 'GH WTDE Config'
-    CreateBackup(searchPath,destinationPath,folder)
-    
     #Tekno Parrot Saves 
     searchPath = f"{userFolder}\\AppData\\Roaming\\TeknoParrot"
     folder = 'Tekno Parrot Save'
@@ -125,6 +115,16 @@ def Main():
     #HOLOCURE Save
     searchPath = f"{userFolder}\\AppData\\Local\\HoloCure"
     folder = 'Holocure Save'
+    CreateBackup(searchPath,destinationPath,folder)
+    
+    #Holy Knight Ricca
+    searchPath = f"{userFolder}\\AppData\\LocalLow\\Mogurasoft\\HolyKnightRicca"
+    folder = 'Holy Knight Ricca Save'
+    CreateBackup(searchPath,destinationPath,folder)
+
+    #FINAL FANTASY XIV - A Realm Reborn
+    searchPath = f"{userFolder}\\Documents\\My Games\\FINAL FANTASY XIV - A Realm Reborn"
+    folder = 'FINAL FANTASY XIV - A Realm Reborn'
     CreateBackup(searchPath,destinationPath,folder)
     
     #Create Zip
