@@ -67,21 +67,26 @@ def Main():
                         help=f"Version specified can be 1 = Version TaskToDo or 2 = Version TaskToDo-BrainService") 
     parser.add_argument("taskToDoFolder", metavar="C:\\TaskToDo",help="Folder where this program will search for TaskToDo files")
     parser.add_argument("toFolder", metavar="C:\\ExampleTo",help="Folder where this program will generate an .zip file")
-    parser.add_argument("rootFolder", metavar="rootFolder", help="Optional defines root .zip folder")
+    parser.add_argument("rootFolder", metavar="rootFolder", help="Defines root folder .zip, is also used as te default .zip filename")
     parser.add_argument("-brainServiceFolder", metavar="C:\\BrainService",help="Folder where this program will search for BrainService files")
-    parser.add_argument("-zip", metavar="example.zip", help="Optional defines filename of .zip")
+    parser.add_argument("-zip", metavar="example.zip", help="Defines filename of .zip")
+    parser.add_argument("-filepass", metavar="example.zip", help="Defines .zip file password, the default password is 123")
     args = parser.parse_args()
 
     if args.packVersion == PackVersion.VersionTaskToDoBrainService and args.brainServiceFolder is None:
         parser.error("argument -brainServiceFolder is required when operation is equals to VersionTaskToDoBrainService.")
 
+    zipFilename = defaultVariables.rootFolder
+    if not args.zip is None:
+        zipFilename = args.zip
+
+    if not args.filepass is None:
+        defaultVariables.filePassword = args.filepass
+
     taskToDoFolder = args.taskToDoFolder
     destinationFolder = args.toFolder
     defaultVariables.rootFolder = args.rootFolder
     defaultVariables.packVersion = args.packVersion
-
-    zipFilename = PackVersion(defaultVariables.packVersion).name
-    zipFilename = args.zip
 
     zipFilename +=f"({defaultVariables.filePassword})"
     zipFilename = destinationFolder+"\\"+zipFilename
@@ -104,6 +109,9 @@ def Main():
         print(f"\nFiles From: {brainServiceFolder}")
         for element in listFilesBrainService:
             print(element.name)
+        print(f"Zipping Files: {taskToDoFolder} and {brainServiceFolder}")
+        ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo,listFilesBrainService,zipFilename)
+
 
 class PackVersion(Enum):
     VersionTaskToDo = 1
