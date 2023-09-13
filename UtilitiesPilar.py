@@ -1,20 +1,18 @@
 import argparse, os, pyzipper
 from enum import Enum
 
-def GetFiles(originFolder: str) -> list:
+def GetFiles(originFolder: str, startFolder: str) -> list:
     listFiles = []
     for element in os.scandir(originFolder):
-
         if defaultVariables.packVersion == PackVersion.TaskToDo.value:
             if element.is_file():
                 if element.name == "TaskToDo.exe" or (element.name.startswith("TaskToDo") and element.name.endswith(".dll")):
-                    listFiles.append(element)
-
-        if defaultVariables.packVersion == PackVersion.TaskToDoBrainService.value:
+                    listFiles.append(File(element.name, element.path, startFolder))
+        elif defaultVariables.packVersion == PackVersion.TaskToDoBrainService.value:
             if element.is_file():
-                listFiles.append(element)
+                listFiles.append(File(element.name, element.path, startFolder))
             elif element.is_dir():
-                listFiles.append(GetFiles(element.path))
+                listFiles.extend(GetFiles(element.path, startFolder))
 
     return listFiles
 
@@ -28,7 +26,7 @@ def ZipFiles_VersionTaskToDo(listFiles: list, destinationFile: str):
                             encryption=pyzipper.WZ_AES) as zf:
         zf.setpassword(defaultVariables.encodedFilePassword())
         for file in listFiles:
-            zf.write(file,f"{folderName}\\{file.name}")
+            zf.write(file.fullPath,f"{folderName}\\{file.filename}")
         
     if os.path.exists(zipFile):
         print(f"Generated File: {zipFile}")
@@ -43,16 +41,18 @@ def ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo: list, listFilesBrain
                             encryption=pyzipper.WZ_AES) as zf:
         zf.setpassword(defaultVariables.encodedFilePassword())
         for file in listFilesTaskToDo:
-            if file.name in ["TaskToDo.exe","TaskToDo.exe.config","CefSharp.BrowserSubprocess.exe"]:
-                zf.write(file,f"{folderName}\\{defaultVariables.taskToDoFolder}\\{file.name}")
+            if file.filename in ["TaskToDo.exe","TaskToDo.exe.config","CefSharp.BrowserSubprocess.exe"]:
+                zf.write(file.fullPath,f"{folderName}\\{defaultVariables.taskToDoFolder}\\{file.fullPathZip()}")
             else:
-                zf.write(file,f"{folderName}\\{defaultVariables.taskToDoDLLFolder}\\{file.name}")
+                zf.write(file.fullPath,f"{folderName}\\{defaultVariables.taskToDoDLLFolder}\\{file.fullPathZip()}")
+            print(file.fullPathZip())
 
         for file in listFilesBrainService:
-            if file.name in ["TaskToDoBrainService.exe","TaskToDoBrainService.exe.config","CefSharp.BrowserSubprocess.exe"]:
-                zf.write(file,f"{folderName}\\{defaultVariables.brainServiceFolder}\\{file.name}")
+            if file.filename in ["TaskToDoBrainService.exe","TaskToDoBrainService.exe.config","CefSharp.BrowserSubprocess.exe"]:
+                zf.write(file.fullPath,f"{folderName}\\{defaultVariables.brainServiceFolder}\\{file.fullPathZip()}")
             else:
-                zf.write(file,f"{folderName}\\{defaultVariables.brainServiceDLLFolder}\\{file.name}")
+                zf.write(file.fullPath,f"{folderName}\\{defaultVariables.brainServiceDLLFolder}\\{file.fullPathZip()}")
+            print(file.fullPathZip())
 
     if os.path.exists(zipFile):
         print(f"Generated File: {zipFile}")
@@ -90,10 +90,10 @@ def Main():
     print(f"\nOperation Type: {PackVersion(defaultVariables.packVersion).name}")
 
     if defaultVariables.packVersion == PackVersion.TaskToDo.value:
-        listFilesTaskToDo = GetFiles(taskToDoFolder)
+        listFilesTaskToDo = GetFiles(taskToDoFolder, taskToDoFolder)
         print(f"\nFiles From: {taskToDoFolder}")
         for element in listFilesTaskToDo:
-            print(element.name)
+            print(element.filename)
 
         print(f"\nZipping Files From: {taskToDoFolder}")
         ZipFiles_VersionTaskToDo(listFilesTaskToDo,zipFilename)
@@ -101,15 +101,15 @@ def Main():
     elif defaultVariables.packVersion == PackVersion.TaskToDoBrainService.value:
         brainServiceFolder = args.brainService
 
-        listFilesTaskToDo = GetFiles(taskToDoFolder)
+        listFilesTaskToDo = GetFiles(taskToDoFolder, taskToDoFolder)
         print(f"\nFiles From: {taskToDoFolder}")
         for element in listFilesTaskToDo:
-            print(element.name)
+            print(element.fullPath)
 
-        listFilesBrainService = GetFiles(brainServiceFolder)
+        listFilesBrainService = GetFiles(brainServiceFolder, brainServiceFolder)
         print(f"\nFiles From: {brainServiceFolder}")
         for element in listFilesBrainService:
-            print(element.name)
+            print(element)
 
         print(f"\nZipping Files From: {taskToDoFolder} and {brainServiceFolder}")
         ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo,listFilesBrainService,zipFilename)
@@ -170,6 +170,44 @@ class DefaultVariables ():
     @rootFolder.setter
     def rootFolder(self, value):
         self._rootFolder = value
+
+class File():
+    def __init__(self):
+        self._filename = ""
+        self._fullPath = ""
+        self._originFolder = ""
+
+    def __init__(self,__filename,__fullPath,__originFolder):
+        self._filename = __filename
+        self._fullPath = __fullPath
+        self._originFolder = __originFolder
+
+    @property
+    def filename(self):
+        return self._filename
+    
+    @filename.setter
+    def filename(self, value):
+        self._filename = value
+
+    @property
+    def fullPath(self):
+        return self._fullPath
+    
+    @fullPath.setter
+    def fullPath(self, value):
+        self._fullPath = value
+
+    @property
+    def originFolder(self):
+        return self._originFolder
+    
+    @originFolder.setter
+    def originFolder(self, value):
+        self._originFolder = value
+
+    def fullPathZip(self):
+        return self._fullPath.removeprefix(self.originFolder).lstrip("\\")
 
 if __name__ == "__main__":
     defaultVariables = DefaultVariables()
