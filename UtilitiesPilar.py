@@ -16,20 +16,24 @@ def GetFiles(originFolder: str, startFolder: str) -> list:
 
     return listFiles
 
+def ShowMessageZippingFile (fileFullPath: str):
+    print(f"Zipping File: {fileFullPath}")
+
 def ZipFiles_VersionTaskToDo(listFiles: list, destinationFile: str):    
     zipFile = destinationFile+'.zip'
     folderName = defaultVariables.rootFolder
 
     with pyzipper.AESZipFile(zipFile,
                             'w',
-                            compression=pyzipper.ZIP_LZMA,
+                            compression=pyzipper.ZIP_BZIP2,
                             encryption=pyzipper.WZ_AES) as zf:
         zf.setpassword(defaultVariables.encodedFilePassword())
         for file in listFiles:
             zf.write(file.fullPath,f"{folderName}\\{file.filename}")
+            ShowMessageZippingFile(file.fullPath)
         
     if os.path.exists(zipFile):
-        print(f"Generated File: {zipFile}")
+        print(f"Generated ZIP File: {zipFile}")
 
 def ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo: list, listFilesBrainService: list, destinationFile: str):
     zipFile = destinationFile+'.zip'
@@ -37,7 +41,7 @@ def ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo: list, listFilesBrain
 
     with pyzipper.AESZipFile(zipFile,
                             'w',
-                            compression=pyzipper.ZIP_LZMA,
+                            compression=pyzipper.ZIP_BZIP2,
                             encryption=pyzipper.WZ_AES) as zf:
         zf.setpassword(defaultVariables.encodedFilePassword())
         for file in listFilesTaskToDo:
@@ -45,17 +49,17 @@ def ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo: list, listFilesBrain
                 zf.write(file.fullPath,f"{folderName}\\{defaultVariables.taskToDoFolder}\\{file.fullPathZip()}")
             else:
                 zf.write(file.fullPath,f"{folderName}\\{defaultVariables.taskToDoDLLFolder}\\{file.fullPathZip()}")
-            print(file.fullPathZip())
+            ShowMessageZippingFile(file.fullPath)
 
         for file in listFilesBrainService:
             if file.filename in ["TaskToDoBrainService.exe","TaskToDoBrainService.exe.config","CefSharp.BrowserSubprocess.exe"]:
                 zf.write(file.fullPath,f"{folderName}\\{defaultVariables.brainServiceFolder}\\{file.fullPathZip()}")
             else:
                 zf.write(file.fullPath,f"{folderName}\\{defaultVariables.brainServiceDLLFolder}\\{file.fullPathZip()}")
-            print(file.fullPathZip())
+            ShowMessageZippingFile(file.fullPath)
 
     if os.path.exists(zipFile):
-        print(f"Generated File: {zipFile}")
+        print(f"Generated ZIP File: {zipFile}")
 
 def Main():
     parser = argparse.ArgumentParser()
@@ -92,8 +96,8 @@ def Main():
     if defaultVariables.packVersion == PackVersion.TaskToDo.value:
         listFilesTaskToDo = GetFiles(taskToDoFolder, taskToDoFolder)
         print(f"\nFiles From: {taskToDoFolder}")
-        for element in listFilesTaskToDo:
-            print(element.filename)
+        #for element in listFilesTaskToDo:
+        #    print(element.fullPath)
 
         print(f"\nZipping Files From: {taskToDoFolder}")
         ZipFiles_VersionTaskToDo(listFilesTaskToDo,zipFilename)
@@ -103,13 +107,13 @@ def Main():
 
         listFilesTaskToDo = GetFiles(taskToDoFolder, taskToDoFolder)
         print(f"\nFiles From: {taskToDoFolder}")
-        for element in listFilesTaskToDo:
-            print(element.fullPath)
+        #for element in listFilesTaskToDo:
+        #    print(element.fullPath)
 
         listFilesBrainService = GetFiles(brainServiceFolder, brainServiceFolder)
         print(f"\nFiles From: {brainServiceFolder}")
-        for element in listFilesBrainService:
-            print(element)
+        #for element in listFilesBrainService:
+        #    print(element.fullPath)
 
         print(f"\nZipping Files From: {taskToDoFolder} and {brainServiceFolder}")
         ZipFiles_VersionTaskToDoBrainService(listFilesTaskToDo,listFilesBrainService,zipFilename)
